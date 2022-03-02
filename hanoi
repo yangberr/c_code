@@ -1,0 +1,28 @@
+#include <stdio.h>
+
+//递归求解汉诺塔问题
+
+void hanoi(int n ,char a, char b ,char c1) {
+
+	if (n == 1) {
+
+		printf("%c -》 %c\n", a, c1);
+	}
+	else {
+		hanoi(n - 1, a, c1, b);
+		printf("%c -》 %c\n", a, c1);
+		hanoi(n - 1, b, a, c1);
+
+	}
+
+}
+
+
+int main() {
+
+	int n ;
+	scanf("%d", &n);
+	hanoi(n ,'A','B','C');
+
+	return 0;
+}
