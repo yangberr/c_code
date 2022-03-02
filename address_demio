@@ -1,0 +1,49 @@
+#include <stdio.h>
+#include <string.h>
+
+
+
+//void print(int n) {
+//
+//	if (n > 9) {
+//		
+//		print(n / 10);
+//	}
+//
+//	printf("%d ", n%10);
+//}
+
+//编写函数不允许创建临时变量求字符串长度
+
+//int strlen_demo(char a[], int len) { //传地址 
+//
+//	while (a[len] != '/0') {
+//
+//		len++;
+//
+//	}
+//	return len;
+//}
+
+int strlen_demo(char* a) {
+	int len = 0;
+	while ( *a != 0) {
+
+		len++;
+		a++;	
+	}
+	return len;
+
+}
+
+int main() {
+
+	char arr[] = "nihao!";
+
+	//print( num);
+	int len = strlen_demo(arr);
+
+	printf("%d", len);
+	return 0;
+
+}
