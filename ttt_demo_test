@@ -1,0 +1,79 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include "game.h"
+
+void game() {
+
+	//数组存放棋盘信息
+	char ret = '0';
+	char borad[ROW][COL] = { 0 };
+	//初始化棋盘
+	InitBorad(borad ,ROW,COL);
+	//打印棋盘
+	DisplayBorad(borad, ROW, COL);
+
+	while (1) {
+		//玩家走
+		PlayerMove(borad, ROW, COL);
+		DisplayBorad(borad, ROW, COL);
+		//判断玩家输赢
+		ret = IsWin(borad, ROW, COL);
+		if (ret != 'C')
+			break;
+		//电脑走
+		ComputerMove(borad, ROW, COL);
+		DisplayBorad(borad, ROW, COL);
+		//判断电脑输赢
+		ret = IsWin(borad, ROW, COL);
+		if (ret != 'C')
+			break;
+
+	}
+	if (ret == '*') {
+		printf("玩家赢！\n");
+	}
+	else if (ret == '-') {
+		printf("电脑赢！\n");
+	}
+	else if(ret == 'Q')
+	{
+		printf("平局！\n");
+	}
+	
+}
+
+void test() {
+
+	int a = 0;
+	srand((unsigned int)time(NULL));
+	scanf("%d", &a);
+	switch (a)
+	{
+	case 1:
+		game();
+		break;
+	case 0:
+		break;
+
+	default:
+		printf("输入错误！");
+		break;
+	}
+
+}
+
+
+void DisplayMenu() {
+
+	printf("*****************************\n");
+	printf("***1.开始游戏   0.退出游戏***\n");
+	printf("*****************************\n");
+
+}
+
+int main() {
+	//1.打印菜单
+	DisplayMenu();
+	test();
+	return 0;
+}
