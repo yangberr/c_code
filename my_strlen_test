@@ -1,0 +1,40 @@
+#pragma once
+#include <stdio.h>
+
+//
+//int my_strlen1(char* arr)
+//{
+//	int i = 0;
+//	for (i = 0; *(arr + i) != 0; i++)
+//	{
+//		;
+//	}
+//	return i;
+//}
+//
+//int my_strlen2(char* arr)
+//{
+//	
+//	char* start = arr;
+//	char* end = arr;
+//	while ((*end) != 0)
+//	{
+//		end++;
+//	}
+//	return end - start;
+//}
+//
+//int main()
+//{
+//	//1.求字符串长度
+//	//法一:
+//	char arr[] = "ni hao!";
+//	int count1 = my_strlen1(arr);
+//	//法二
+//	int count2 = my_strlen2(arr);
+//	//法三递归
+//
+//	printf("%d\n", count1);
+//	printf("%d\n", count2);
+//	return 0;
+//}
