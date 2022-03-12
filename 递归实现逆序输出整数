@@ -1,0 +1,15 @@
+
+#include<stdio.h>
+void print(int n) ;
+int main()
+{
+int x = 12345;
+print( x );
+return 0;
+}
+void print(int n)
+{
+if ( n == 0 ) return;
+printf("%d", n%10);
+print(n/10);
+}
