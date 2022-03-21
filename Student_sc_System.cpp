@@ -27,12 +27,14 @@ void my_Exit();//退出系统
 void insertStuIfo(Student_Node *L, Student_Node s);//插入节点函数
 int Search_Id(Student_Node *L , int s_id);//学好查重函数
 int Find_Max_Sc(Student_Node *L, int mode);//查找最高分数
-void My_Sort(Student_Node *L ,int s_mode);//自定义排序函数 实现可按照学号以及各科成绩进行链表的排序 调用qsort 
+void My_Sort(Student_Node *L );//自定义排序函数 实现可按照学号以及各科成绩进行链表的排序 调用qsort 
+int Node_Swap(Student_Node *node1, Student_Node *node2 ,int ch);//定义判断函数
 
 //读取文件
 int readFile(Student_Node *L);//定义链表指针
 //写入文件
 int writeFile(Student_Node *L);
+
 
 
 int main()
@@ -86,6 +88,9 @@ int main()
 		case 5://输出学生信息
 			Print_Student(&List);
 			break;
+		case 6:
+			My_Sort(&List);
+			break;
 		case 0://退出系统
 			my_Exit();
 			break;
@@ -110,11 +115,11 @@ void display_menu()
 	printf("-----    3. 删除学生信息    ----\n");
 	printf("-----    4. 查询学生信息    ----\n");
 	printf("-----    5. 输出学生信息    ----\n");
+	printf("-----    6. 排序学生信息    ----\n");
 	printf("-----    0. 退出管理系统    ----\n");
 	printf("--------------------------------\n");
 	printf("--------------------------------\n");
 }
-
 
 void Add_Student(Student_Node *L)//增加学生信息
 {
@@ -150,9 +155,6 @@ void Add_Student(Student_Node *L)//增加学生信息
 	insertStuIfo(&List, s);//定义插入函数 
 	
 }
-
-
-
 
 int Fix_Student(Student_Node *L)//修改学生信息
 {
@@ -351,11 +353,15 @@ void Print_Student(Student_Node *L)//输出学生信息
 			p = p->next;//指针后移
 		}
 	}	
-	printf("最高分:\n");
-	printf("语文:%d\t",Find_Max_Sc(L,0));
-	printf("数学:%d\t",Find_Max_Sc(L,1));
-	printf("英语:%d\t",Find_Max_Sc(L,2));
-	printf("总分:%d\t\n",Find_Max_Sc(L,3));
+	if (L->next != NULL) 
+	{
+		printf("最高分:\n");
+		printf("语文:%d\t", Find_Max_Sc(L, 0));
+		printf("数学:%d\t", Find_Max_Sc(L, 1));
+		printf("英语:%d\t", Find_Max_Sc(L, 2));
+		printf("总分:%d\t\n", Find_Max_Sc(L, 3));
+	}
+	
 }
 
 void my_Exit()//退出系统
@@ -384,7 +390,6 @@ int Find_Max_Sc(Student_Node *L, int mode)
 		if (3 == mode) return max3;
 	}
 }
-
 
 int readFile(Student_Node *L) //文件读取输入
 {
@@ -421,32 +426,100 @@ int readFile(Student_Node *L) //文件读取输入
 	return 1;
 }
 
-void My_Sort(Student_Node *L, int s_mode) 
+void My_Sort(Student_Node *L) 
 {
-	if (s_mode < 0 && s_mode>4) //mode 0按照学号排序 1按照总成绩排序 2按照语文成绩排序 3按照数学成绩排序 4按照英语成绩排序
-	{
-		printf("模式选择错误!\n");
-		return;
-	}
-	//自定义冒泡排序函数 函数使用方法  1.传入比较元素的起始地址  2.传入元素个数  3.传入一个元素所占宽度（字节） 4.传入比较方法函数地址
-	//传入链表 通过比较学号 交换节点 
+	//mode 0按照学号排序 1按照总成绩排序 2按照语文成绩排序 3按照数学成绩排序 4按照英语成绩排序
+	int choice = -1;
+	printf("请选择排序方式: id - 0  语文成绩 - 1  数学成绩 - 2  英语成绩 - 3  总分 - 4\n");
+	scanf("%d", &choice);
+	int ret = -1;
 	Student_Node *pre = L;//定义头指针
 	Student_Node *p = L->next;//
+	if (p == NULL) return;
 	Student_Node *r = p->next;//定义尾指针
-	if (r != NULL)
+	Student_Node *p_flag = p->next;//定义循环判断指针
+	
+	if (r != NULL)//排序函数逻辑问题 只遍历了一次 无法实现排序功能 按照冒泡排序逻辑 
 	{
-		while (r != NULL)
+		while(p_flag != NULL)
 		{
-			if (r->next->id < r->id)
+			
+			while (r != NULL)//每一轮将最大节点放置最后 需要便利 节点数 - 1 轮  小结点后移
 			{
-				//如果后一个节点的学号小于前一个节点的学号 就交换两个节点位置
+				ret = Node_Swap(p, r, choice);
+				if (1 == ret)//前一个节点id大于后一个节点id就交换两个节点 按学号升序
+				{
 
+					//如果后一个节点的学号小于前一个节点的学号 就交换两个节点位置
+					p->next = r->next;
+					r->next = p;
+					pre->next = r;
+					pre = pre->next;
+					r = p->next;
+
+				}
+				else
+				{
+					pre = p;
+					p = r;
+					r = r->next;
+				}
 
 			}
-
+			pre = L;
+			p = L->next;
+			r = p->next;
+			p_flag = p_flag->next;
 		}
 
 	}
+	writeFile(&List);
+	Print_Student(&List);
+
+}
+
+int Node_Swap(Student_Node *node1, Student_Node *node2 ,int ch)
+{
+	switch (ch)
+	{
+	case 0: //按学号升序
+		if (node1->id > node2->id)
+			return 1;
+		else 
+			return 0;
+
+		break;
+	case 1://按语文成绩降序
+		if (node1->ch >= node2->ch)
+			return 0;
+		else
+			return 1;
+		
+		break;
+	case 2://按数学成绩降序
+		if (node1->ma >= node2->ma)
+			return 0;
+		else
+			return 1;
+
+		break;
+	case 3://按英语成绩降序
+		if (node1->en >= node2->en)
+			return 0;
+		else
+			return 1;
+		break;
+	case 4://按总分降序
+		if (node1->sum >= node2->sum)
+			return 0;
+		else
+			return 1;
+		break;
+	default:
+		printf("选择错误!\n");
+		break;
+	}
+
 
 }
 
