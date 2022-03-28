@@ -1,0 +1,91 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <assert.h>
+
+struct stu 
+{
+	char name[20];
+	int age;
+
+};
+
+void* my_memcpy(void* dest, const void* src, size_t num)//void* 无类型指针 可返回任意类型
+{
+	void* ret = dest;
+	assert(dest);
+	assert(src);
+	while (num--)
+	{
+		*(char*)dest = *(char*)src;//强制类型转换
+		++(char*)dest;
+		++(char*)src;
+
+	}
+	return ret;
+}
+
+void* my_memmove(void* dest, const void* src, size_t num)//实现思路 原数据
+{
+	void* ret = dest;
+	assert(dest);
+	assert(src);
+	//判断原内存和目标内存之间的位置关系
+	if (src > dest)//从后往前
+	{
+		while (num--)
+		{
+			*(char*)dest = *(char*)src;//强制类型转换
+			++(char*)dest;
+			++(char*)src;
+		}
+	}
+	else//从前往后
+	{	
+		//*(char*)dest += num;
+		//*(char*)src += num;
+		//while (num--)
+		//{
+		//	*(char*)dest = *(char*)src;
+		//	--(char*)dest;//先进性强制类型转换操作
+		//	--(char*)src;//在进行运算操作
+
+		//}
+		while (num--)
+		{
+			*((char *)dest + num) = *((char*)src + num);
+		}
+
+	}
+	return ret;
+}
+
+void test1()
+{
+	int arr1[] = { 1,2,3,4 };
+	int arr2[10] = { 0 };
+	//strcpy(arr2, arr1);
+	//memcpy()内存拷贝  void* 无类型指针
+	//memmove()处理内存重叠情况
+	//memmove(arr1 + 1, arr1, 4 * 3);//4*3整形占4个字节 总共拷贝3个
+	struct stu s1[] = { { "球球",28 } , { "米线",25 } };
+	struct stu s2[5] = { 0 };
+	//memcpy(arr2,arr1,sizeof(arr1));
+	my_memcpy(s2, s1, sizeof(s2));
+	
+}
+
+void test2()
+{
+	int arr1[] = {1,2,3,4,5,6};
+	int arr2[] = {1,2,3,5,6,8};
+	int ret = memcmp(arr1, arr2, 8);
+	printf("%d\n", ret);
+}
+
+int main()
+{
+	//test1();
+	test2();
+
+	return 0;
+}
