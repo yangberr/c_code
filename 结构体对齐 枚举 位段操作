@@ -1,0 +1,127 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include<stddef.h>
+
+//声明一个结构体了类型
+//声明一个学生类型，通过学生类型创建学生变量(对象)
+//描述学生: 属性：学号 + 名字 + 电话 + 性别 + 年龄
+typedef struct Stu
+{
+	int Id;
+	char Name[20];
+	char Phone[11];
+	char Sex[5];
+	int age;
+
+}s4,s5;//结构体类型声明 全局变量创建 
+
+//匿名结构体变量
+//结构体内存对齐
+//修改默认对齐数
+
+#pragma pack(4)//设置默认对齐数为4
+#pragma pack()//取消默认对齐数
+
+
+struct
+{
+	int Id;
+	char Name[20];
+}r;//匿名结构体变量必须在声明时创建
+
+struct Stu s3;//创建全局变量
+
+
+
+void test1()
+{
+	//创建结构体变量 局部变量
+	struct Stu s1 ;
+	struct Stu s2 ;
+}
+
+//结构体的自引用
+typedef  struct node
+{
+	int data;//数据域
+	struct node* next;//指针域
+
+}node;
+
+
+void test2()
+{
+	struct s
+	{
+		char Name;
+		int Phone;
+
+	};
+	struct s s1= { "ni",123 };
+	//printf("%d  %d",offsetof( struct s s1.Name,s1.Phone));//计算偏移量
+
+
+}
+
+void test3()
+{
+	struct s //节省内存空间 但是不跨平台
+	{
+		char a : 4;//开辟一个占1个字节（8个二进制位）的空间 a占4个二进制位 
+		char b : 5;//b占5个字节所以从新开辟一个字节存放b 
+		char c : 3;//c占3个字节 放在b之后
+		char d : 2;
+
+	};
+
+	struct s s1 = { 0 };
+	s1.a = 1;
+	s1.b = 2;
+	s1.c = 3;
+	s1.d = 4;
+}
+
+void test4()
+{
+	enum Sex 
+		
+	//枚举的优点
+	//1.增加代码的可读性和可维护性
+	//2.和#define定义的标识符比较枚举有类型检查 
+	//3.防止命名冲突
+	//4.便于调试
+	//5.使用方便，一次可以定义多个常量
+	
+	{//枚举的可能取值 -常量 可赋初值
+		MALE,
+		FEMALE,
+		SECRET
+
+	};
+
+	enum Sex s = MALE;
+}
+
+void test5()
+{
+	union  Un
+	{
+		char c;
+		int i; //c和i共用同一块空间 至少是最大成员大小 且是最大对齐数的整数倍
+	};//4个字节
+
+	union Un u;
+
+	
+}
+int main()
+{
+
+	//test1();
+	//test2();
+	//test3();//位段  
+	//test4();//枚举
+	test5();//联合 - 联合体 共用体
+
+	return 0;
+}
