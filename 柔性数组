@@ -1,0 +1,176 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+#include <stdio.h>
+#include <malloc.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <string.h>
+
+void test1()
+{
+	//malloc() free()函数
+	//向内存申请10个整形空间
+	void* p = malloc(10 * sizeof(int));//有可能有开辟失败的情况 开辟失败返回空指针
+	if (p == NULL)
+	{
+		//打印错误原因
+		printf("%s\n", strerror(errno));
+	}
+	else
+	{
+		//开辟成功 正常使用 
+		int i = 0;
+		for (i = 0; i < 10; i++)
+		{
+			*((char*)p + i) = i;
+		}
+		for (i = 0; i < 10; i++)
+		{
+			printf("%d ", *((char* )p + i));
+
+		}
+	}
+	//动态申请的空间不再使用的时候 释放空间 free()
+	free(p);
+	p = NULL;//
+
+}
+void test2()
+{
+	//calloc() 
+	int* p = (int* )calloc(10, sizeof(int));//申请空间 并初始化为0
+	if (p == NULL)
+	{
+		printf("%s \n", strerror(errno));
+	}
+	else
+	{
+		int i = 0;
+		for (i = 0; i < 10; i++)
+		{
+			printf("%d ", *(p + i));
+		}
+	}
+	free(p);
+	p = NULL;
+}
+
+void test3()
+{
+	void *p = (int *) malloc(20);
+	if (p == NULL)
+	{
+		printf("%s\n", strerror(errno));
+	}
+	else
+	{
+		int i = 0;
+		for (i = 0; i < 10; i++)
+		{
+			*((char *)p + i) = i;
+		}
+		
+
+	}
+	//假设20个字节不能够满足需求
+	//需要40个字节空间 就可用realloc函数修改
+	//realloc函数使用注意事项 
+	//1.如果p指向之后的内存空间之后有足够的内存空间可以追加 则直接追加 然后返回
+	//2.如果p之后没有足够的内存空间可以追加 则会从新找一块新的内存区域开辟 并且把原内存的数据拷贝回来 ，释放旧的内存空间，最后返回新的地址
+	//3.如果开辟失败用p接受（原指针）那么开辟失败返回的空指针会导致旧指针丢失
+	void *p2 = realloc(p, 40); //参数1为需要修改的内存地址 参数2为空间大小
+
+	int i = 0;
+	for (i = 5; i < 10; i++)
+	{
+		*((char* )p2 + i) = i;
+	}
+	for (i = 0; i < 10; i++)
+	{
+		printf("%d ", *((char *)p2 + i));
+	}
+	free(p2);
+	p2 = NULL;
+
+}
+
+void test4()
+{
+	//1.对空指针进行解引用
+	//2.对动态开辟内存的越界访问
+	//3.对非动态开辟空间进行free
+	//int a = 10;
+	//int *p = &a;
+	//*p = 20;
+	//free(p);
+	//p = NULL;
+	//使用free释放动态开辟内存的一部分.
+	//对同一块动态内存多次释放 (原则:谁开辟谁回收 free之后进行置空操作)
+	//动态开辟空间忘记释放（内存泄漏）
+
+
+}
+
+void GetMemory(char* *p)
+{
+	//p = (char *)malloc(100);//内存空间未释放 造成内存泄露
+	*p = (char *)malloc(100);
+}
+char* GetMemory2(char *p)
+{
+	
+	p = (char *)malloc(100);
+	return p;
+}
+void test5()
+{
+	//运行代码程序崩溃
+	//内存泄露问题
+	char *str = NULL;
+	//GetMemory(str);//
+	GetMemory(&str);//改正1
+	//str = GetMemory2(str);//改正2
+	strcpy(str, "hello");//访问内存失败 程序崩溃
+	printf("%s\n", str);
+	free(str);
+	str = NULL;
+}
+
+void test6()
+{
+	struct s
+	{
+		int n;
+		int arr[];//未知大小  柔性数组成员 -数组大小谁可以变化的
+		//int* arr;
+	};
+	  
+	struct s s1;
+	struct s* ps = (s*) malloc(sizeof(struct s) + 5 * sizeof(int));//malloc强制类型转换 
+	ps->n = 22;
+	int i = 0;
+	for (i = 0; i < 5; i++)
+	{
+		ps->arr[i] = i;
+	}
+	//调整空间
+	struct s* ptr = (s*) realloc(ps, 44);
+	if (ptr != NULL)
+	{
+		ps = ptr;
+	}
+	free(ps);
+	ps = NULL;
+	printf("%d\n", sizeof(s1));
+}
+
+int main()
+{
+	//test1();//动态内存分配malloc
+	//test2();//动态内存分配并处初始化
+	//test3();//动态内存分配 调整动态开辟内存空间大小
+	//test4();//常见内存错误
+	//test5();
+	test6();//柔性数组
+	return 0;
+}
