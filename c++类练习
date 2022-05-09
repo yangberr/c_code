@@ -1,0 +1,45 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include<string>
+#include<iostream>
+using namespace std;
+//设计一个学生类 ，属性有姓名、学号，可以给姓名学号赋值，可以显示学生的姓名学号
+
+class student 
+{
+	//
+	//访问权限
+public:
+	//属性
+	string name ;
+	int ID;
+
+	//行为
+	//学生信息赋值
+	void fuzhi_stu_Info() 
+	{
+		cout << "请输入学生姓名:" << endl;
+		cin >> name;
+		cout << "请输入学生学号:" << endl;
+		cin >> ID;
+
+	}
+
+	//显示学生信息功能
+	void print_stu_Info()
+	{
+
+		cout << "学生姓名:" << name << endl;
+		cout << "学生学号:" << ID << endl;
+	}
+
+};
+
+int main() {
+
+	student s1;
+	//s1.name = "zhangsan";
+	//s1.ID = 2022001;
+	s1.fuzhi_stu_Info();
+	s1.print_stu_Info();
+
+}
